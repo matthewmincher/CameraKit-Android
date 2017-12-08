@@ -18,6 +18,8 @@ public class CameraKitEvent {
 
     public static final String TYPE_FOCUS_MOVED = "CKFocusMovedEvent";
 
+    public static final String TYPE_ZOOM_CHANGED = "CKZoomChangedEvent";
+
     public static final String TYPE_TEXT_DETECTED = "CKTextDetectedEvent";
 
     private String type;

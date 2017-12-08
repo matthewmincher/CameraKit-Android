@@ -298,6 +298,11 @@ public class Camera1 extends CameraImpl {
                 float maxZoom = mCameraParameters.getZoomRatios().get(mCameraParameters.getZoomRatios().size() - 1) / 100f;
                 if (mZoom > maxZoom) mZoom = maxZoom;
 
+                CameraKitEvent event = new CameraKitEvent(CameraKitEvent.TYPE_ZOOM_CHANGED);
+                event.getData().putFloat("zoom", mZoom);
+                event.getData().putFloat("maxZoom", maxZoom);
+
+                mEventDispatcher.dispatch(event);
             }
         }
     }
