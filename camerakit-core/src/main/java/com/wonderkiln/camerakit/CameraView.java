@@ -28,6 +28,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -508,6 +509,10 @@ public class CameraView extends CameraViewLayout {
 
     public Size getCaptureSize() {
         return mCameraImpl != null ? mCameraImpl.getCaptureResolution() : null;
+    }
+
+    public View getPreviewView(){
+        return mPreviewImpl != null ? mPreviewImpl.getView() : null;
     }
 
     private void requestPermissions(boolean requestCamera, boolean requestAudio) {
