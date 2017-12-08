@@ -18,6 +18,9 @@ public class CameraKit {
         public static final int FACING_BACK = 0;
         public static final int FACING_FRONT = 1;
 
+        public static final int SURFACE_TEXTURE = 0;
+        public static final int SURFACE_SURFACE = 1;
+
         public static final int FLASH_OFF = 0;
         public static final int FLASH_ON = 1;
         public static final int FLASH_AUTO = 2;
@@ -47,6 +50,7 @@ public class CameraKit {
 
     static class Defaults {
 
+        static final int DEFAULT_SURFACE = Constants.SURFACE_SURFACE;
         static final int DEFAULT_FACING = Constants.FACING_BACK;
         static final int DEFAULT_FLASH = Constants.FLASH_OFF;
         static final int DEFAULT_FOCUS = Constants.FOCUS_CONTINUOUS;

@@ -27,8 +27,9 @@
                 app:ckJpegQuality="100"
                 app:ckMethod="standard"
                 app:ckPinchToZoom="true"
+                app:ckSurface="texture"
                 app:ckVideoQuality="highest"
-                app:ckZoom="2.0" />
+                app:ckZoom="1.0" />
 
         </FrameLayout>
 

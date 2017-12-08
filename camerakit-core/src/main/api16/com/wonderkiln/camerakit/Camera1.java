@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.SurfaceHolder;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
@@ -694,7 +695,12 @@ public class Camera1 extends CameraImpl {
         synchronized (mCameraLock) {
             try {
                 mCamera.reconnect();
-                mCamera.setPreviewDisplay(mPreview.getSurfaceHolder());
+
+                if(mPreview.getOutputClass() == SurfaceHolder.class){
+                    mCamera.setPreviewDisplay(mPreview.getSurfaceHolder());
+                } else {
+                    mCamera.setPreviewTexture(mPreview.getSurfaceTexture());
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

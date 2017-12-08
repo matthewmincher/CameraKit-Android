@@ -9,6 +9,7 @@ import static com.wonderkiln.camerakit.CameraKit.Constants.FLASH_TORCH;
 import static com.wonderkiln.camerakit.CameraKit.Constants.PERMISSIONS_LAZY;
 import static com.wonderkiln.camerakit.CameraKit.Constants.PERMISSIONS_PICTURE;
 import static com.wonderkiln.camerakit.CameraKit.Constants.PERMISSIONS_STRICT;
+import static com.wonderkiln.camerakit.CameraKit.Constants.SURFACE_SURFACE;
 
 import android.Manifest;
 import android.app.Activity;
@@ -62,6 +63,9 @@ public class CameraView extends CameraViewLayout {
     @Focus
     private int mFocus;
 
+    @SurfaceType
+    private int mSurface;
+
     @CaptureMethod
     private int mMethod;
 
@@ -111,6 +115,7 @@ public class CameraView extends CameraViewLayout {
 
             try {
                 mFacing = a.getInteger(R.styleable.CameraView_ckFacing, CameraKit.Defaults.DEFAULT_FACING);
+                mSurface = a.getInteger(R.styleable.CameraView_ckSurface, CameraKit.Defaults.DEFAULT_SURFACE);
                 mFlash = a.getInteger(R.styleable.CameraView_ckFlash, CameraKit.Defaults.DEFAULT_FLASH);
                 mFocus = a.getInteger(R.styleable.CameraView_ckFocus, CameraKit.Defaults.DEFAULT_FOCUS);
                 mMethod = a.getInteger(R.styleable.CameraView_ckMethod, CameraKit.Defaults.DEFAULT_METHOD);
@@ -131,7 +136,12 @@ public class CameraView extends CameraViewLayout {
 
         mEventDispatcher = new EventDispatcher();
 
-        mPreviewImpl = new SurfaceViewPreview(context, this);
+        if(mSurface == SURFACE_SURFACE){
+            mPreviewImpl = new SurfaceViewPreview(context, this);
+        } else {
+            mPreviewImpl = new TextureViewPreview(context, this);
+        }
+
         mCameraImpl = new Camera1(mEventDispatcher, mPreviewImpl);
 
         mIsStarted = false;

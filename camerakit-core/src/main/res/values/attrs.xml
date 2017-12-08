@@ -2,6 +2,10 @@
 <resources>
 
     <declare-styleable name="CameraView">
+        <attr name="ckSurface" format="enum">
+            <enum name="texture" value="0" />
+            <enum name="surface" value="1" />
+        </attr>
 
         <attr name="ckFacing" format="enum">
             <enum name="back" value="0" />
