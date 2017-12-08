@@ -79,6 +79,8 @@ public class BitmapOperator {
 
     static {
         System.loadLibrary("JniYuvOperator");
+        System.loadLibrary("jpgd");
+        System.loadLibrary("jpge");
         System.loadLibrary("JniBitmapOperator");
     }
 
