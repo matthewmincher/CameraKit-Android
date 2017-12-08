@@ -282,12 +282,23 @@ public class Camera1 extends CameraImpl {
 
     @Override
     void setZoom(float zoomFactor) {
+       setZoomInternal(zoomFactor, true);
+    }
+
+    @Override
+    void modifyZoom(float modifier) {
+        synchronized (mCameraLock) {
+            setZoomInternal(this.mZoom * modifier, false);
+        }
+    }
+
+    private void setZoomInternal(float zoomFactor, boolean internal){
         synchronized (mCameraLock) {
             this.mZoom = zoomFactor;
             if (zoomFactor <= 1) {
                 mZoom = 1;
             } else {
-                mZoom= zoomFactor;
+                mZoom = zoomFactor;
             }
 
             if (mCameraParameters != null && mCameraParameters.isZoomSupported()) {
@@ -301,16 +312,10 @@ public class Camera1 extends CameraImpl {
                 CameraKitEvent event = new CameraKitEvent(CameraKitEvent.TYPE_ZOOM_CHANGED);
                 event.getData().putFloat("zoom", mZoom);
                 event.getData().putFloat("maxZoom", maxZoom);
+                event.getData().putBoolean("internal", internal);
 
                 mEventDispatcher.dispatch(event);
             }
-        }
-    }
-
-    @Override
-    void modifyZoom(float modifier) {
-        synchronized (mCameraLock) {
-            setZoom(this.mZoom * modifier);
         }
     }
 
