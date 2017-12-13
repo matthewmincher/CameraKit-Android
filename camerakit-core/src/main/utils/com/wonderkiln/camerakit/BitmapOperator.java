@@ -1,6 +1,7 @@
 package com.wonderkiln.camerakit;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 
 import java.nio.ByteBuffer;
 
@@ -13,6 +14,7 @@ public class BitmapOperator {
 
     public BitmapOperator(final Bitmap bitmap) {
         storeBitmap(bitmap);
+
     }
 
     private void storeBitmap(final Bitmap bitmap) {
@@ -22,9 +24,13 @@ public class BitmapOperator {
 
     public void rotateBitmap(int degrees) {
         if (handler == null) return;
-        if (degrees == 90) jniRotateBitmapCw90(handler);
-        else if (degrees == 180) jniRotateBitmap180(handler);
-        else if (degrees == 270) jniRotateBitmapCcw90(handler);
+        if (degrees == 90){
+            jniRotateBitmapCw90(handler);
+        } else if (degrees == 180){
+            jniRotateBitmap180(handler);
+        } else if (degrees == 270){
+            jniRotateBitmapCcw90(handler);
+        }
     }
 
     public void cropBitmap(final int left, final int top, final int right, final int bottom) {
@@ -51,6 +57,13 @@ public class BitmapOperator {
         final byte[] jpeg = getJpeg(quality);
         freeBitmap();
         return jpeg;
+    }
+
+    public int getWidth(){
+        return jniGetBitmapWidth(handler);
+    }
+    public int getHeight(){
+        return jniGetBitmapHeight(handler);
     }
 
     public Bitmap getBitmap() {
@@ -103,5 +116,9 @@ public class BitmapOperator {
     private native void jniFlipBitmapHorizontal(ByteBuffer handler);
 
     private native void jniFlipBitmapVertical(ByteBuffer handler);
+
+    private native int jniGetBitmapWidth(ByteBuffer handler);
+
+    private native int jniGetBitmapHeight(ByteBuffer handler);
 
 }

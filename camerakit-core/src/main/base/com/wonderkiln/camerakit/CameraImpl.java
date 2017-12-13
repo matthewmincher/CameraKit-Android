@@ -35,6 +35,7 @@ abstract class CameraImpl {
     abstract void setZoom(float zoomFactor);
     abstract void modifyZoom(float modifier);
     abstract void setFocusArea(float x, float y);
+    abstract void setMinPreferredResolution(int sidePx);
 
     abstract void captureImage(ImageCapturedCallback callback);
     interface ImageCapturedCallback {

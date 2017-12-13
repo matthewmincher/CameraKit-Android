@@ -84,6 +84,8 @@ public class CameraView extends CameraViewLayout {
     private boolean mCropOutput;
     private boolean mDoubleTapToToggleFacing;
 
+    private int mMinPreferredResolution;
+
     private boolean mAdjustViewBounds;
 
     private DisplayOrientationDetector mDisplayOrientationDetector;
@@ -129,6 +131,7 @@ public class CameraView extends CameraViewLayout {
                 mDoubleTapToToggleFacing = a.getBoolean(R.styleable.CameraView_ckDoubleTapToToggleFacing, CameraKit.Defaults.DEFAULT_DOUBLE_TAP_TO_TOGGLE_FACING);
                 mLockVideoAspectRatio = a.getBoolean(R.styleable.CameraView_ckLockVideoAspectRatio, false);
                 mAdjustViewBounds = a.getBoolean(R.styleable.CameraView_android_adjustViewBounds, CameraKit.Defaults.DEFAULT_ADJUST_VIEW_BOUNDS);
+                mMinPreferredResolution = a.getInteger(R.styleable.CameraView_ckMinPreferredResolution, CameraKit.Defaults.DEFAULT_MIN_PREFERRED_RESOLUTION);
             } finally {
                 a.recycle();
             }
@@ -163,6 +166,8 @@ public class CameraView extends CameraViewLayout {
         setVideoQuality(mVideoQuality);
         setVideoBitRate(mVideoBitRate);
         setLockVideoAspectRatio(mLockVideoAspectRatio);
+        mCameraImpl.setMinPreferredResolution(mMinPreferredResolution);
+
 
         if (!isInEditMode()) {
             mDisplayOrientationDetector = new DisplayOrientationDetector(context) {
@@ -450,7 +455,13 @@ public class CameraView extends CameraViewLayout {
     }
 
     public void captureImage() {
-        captureImage(null);
+        captureImage(null, null);
+    }
+    public void captureImage(List<CameraKitOperation> postProcessorOperations){
+        captureImage(null, postProcessorOperations);
+    }
+    public void captureImage(CameraKitEventCallback<CameraKitImage> callback){
+        captureImage(callback, null);
     }
 
     public boolean setTextDetectionListener(final CameraKitEventCallback<CameraKitTextDetect> callback) throws GooglePlayServicesUnavailableException {
@@ -469,7 +480,7 @@ public class CameraView extends CameraViewLayout {
         }
     }
 
-    public void captureImage(final CameraKitEventCallback<CameraKitImage> callback) {
+    public void captureImage(final CameraKitEventCallback<CameraKitImage> callback, final List<CameraKitOperation> postProcessorOperations) {
         mCameraImpl.captureImage(new CameraImpl.ImageCapturedCallback() {
             @Override
             public void imageCaptured(byte[] jpeg) {
@@ -479,12 +490,27 @@ public class CameraView extends CameraViewLayout {
                 if (mCropOutput)
                     postProcessor.setCropOutput(AspectRatio.of(getWidth(), getHeight()));
 
-                CameraKitImage image = new CameraKitImage(postProcessor.getJpeg());
+                CameraKitImage image;
+
+                if(postProcessorOperations != null){
+                    BitmapOperator operator = postProcessor.getOperator();
+
+                    for(CameraKitOperation operation : postProcessorOperations){
+                        operation.operate(operator);
+                    }
+
+                    image = new CameraKitImage(postProcessor.getJpeg(operator));
+                } else {
+                    image = new CameraKitImage(postProcessor.getJpeg());
+                }
+
                 if (callback != null) callback.callback(image);
                 mEventDispatcher.dispatch(image);
             }
         });
     }
+
+
 
     public void captureVideo() {
         captureVideo(null, null);

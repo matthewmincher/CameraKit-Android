@@ -20,6 +20,16 @@ Java_com_wonderkiln_camerakit_BitmapOperator_jniGetJpegData(JNIEnv *env,
                                                             jobject obj,
                                                             jobject handle,
                                                             jint quality);
+
+JNIEXPORT jint JNICALL
+Java_com_wonderkiln_camerakit_BitmapOperator_jniGetBitmapWidth(JNIEnv *env,
+                                                         jobject obj,
+                                                         jobject handle);
+JNIEXPORT jint JNICALL
+Java_com_wonderkiln_camerakit_BitmapOperator_jniGetBitmapHeight(JNIEnv *env,
+                                                         jobject obj,
+                                                         jobject handle);
+
 JNIEXPORT jobject JNICALL
 Java_com_wonderkiln_camerakit_BitmapOperator_jniGetBitmapFromStoredBitmapData(JNIEnv *env,
                                                                               jobject obj,
@@ -82,6 +92,22 @@ void convertIntToArgb(uint32_t pixel, ARGB *argb) {
     argb->green = ((pixel >> 16) & 0xff);
     argb->blue = ((pixel >> 8) & 0xff);
     argb->alpha = (pixel & 0xff);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_wonderkiln_camerakit_BitmapOperator_jniGetBitmapWidth(JNIEnv *env,
+                                                         jobject obj,
+                                                         jobject handle){
+    JniBitmap *jniBitmap = (JniBitmap *) env->GetDirectBufferAddress(handle);
+    return jniBitmap->_bitmapInfo.width;
+}
+JNIEXPORT jint JNICALL
+Java_com_wonderkiln_camerakit_BitmapOperator_jniGetBitmapHeight(JNIEnv *env,
+                                                          jobject obj,
+                                                          jobject handle){
+
+    JniBitmap *jniBitmap = (JniBitmap *) env->GetDirectBufferAddress(handle);
+    return jniBitmap->_bitmapInfo.height;
 }
 
 JNIEXPORT void JNICALL Java_com_wonderkiln_camerakit_BitmapOperator_jniCropBitmap(

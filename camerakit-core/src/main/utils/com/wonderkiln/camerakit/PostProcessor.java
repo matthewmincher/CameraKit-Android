@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.support.media.ExifInterface;
+import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class PostProcessor {
         this.cropAspectRatio = aspectRatio;
     }
 
-    public byte[] getJpeg() {
+    public BitmapOperator getOperator(){
         Bitmap bitmap;
         try {
             bitmap = getBitmap();
@@ -67,7 +68,14 @@ public class PostProcessor {
             new CenterCrop(cropWidth, cropHeight, cropAspectRatio).apply(bitmapOperator);
         }
 
-        return bitmapOperator.getJpegAndFree(jpegQuality);
+        return bitmapOperator;
+    }
+
+    public byte[] getJpeg(BitmapOperator operator){
+        return operator.getJpegAndFree(jpegQuality);
+    }
+    public byte[] getJpeg() {
+        return getOperator().getJpegAndFree(jpegQuality);
     }
 
     private Bitmap getBitmap() throws IOException {
@@ -155,7 +163,6 @@ public class PostProcessor {
     }
 
     private static class CenterCrop {
-
         private int width;
         private int height;
         private AspectRatio aspectRatio;

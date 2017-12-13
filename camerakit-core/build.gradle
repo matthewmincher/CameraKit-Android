@@ -41,31 +41,3 @@ dependencies {
 
 group = 'com.wonderkiln'
 version = rootProject.ext.versionName
-
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            name 'CameraKit-Core-Android'
-            packaging 'aar'
-        }
-    }
-}
-
-bintray {
-    user = rootProject.ext.bintrayUser
-    key = rootProject.ext.bintrayKey
-    override = true
-    publish = true
-    configurations = ['archives']
-    pkg {
-        repo = 'snapshots'
-        name = 'CameraKit-Core-Android'
-        userOrg = 'wonderkiln'
-        vcsUrl = 'https://github.com/wonderkiln/CameraKit-Android.git'
-        version {
-            name = rootProject.ext.versionName
-            vcsTag = rootProject.ext.versionName
-            released = new Date()
-        }
-    }
-}

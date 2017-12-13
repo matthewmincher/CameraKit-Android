@@ -75,6 +75,8 @@ public class Camera1 extends CameraImpl {
     @VideoQuality
     private int mVideoQuality;
 
+    private int mMinPreferredResolution;
+
     private Detector<TextBlock> mTextDetector;
 
     private int mVideoBitRate;
@@ -169,6 +171,11 @@ public class Camera1 extends CameraImpl {
                 }
             }
         }
+    }
+
+    @Override
+    void setMinPreferredResolution(int sidePx) {
+        this.mMinPreferredResolution = sidePx;
     }
 
     @Override
@@ -431,7 +438,13 @@ public class Camera1 extends CameraImpl {
                         mCameraParameters.setRotation(captureRotation);
                         mCamera.setParameters(mCameraParameters);
 
-                        mCamera.takePicture(null, null, null,
+                        mCamera.takePicture(
+                                new Camera.ShutterCallback() {
+                                    @Override
+                                    public void onShutter() {
+                                        mEventDispatcher.dispatch(new CameraKitEvent(CameraKitEvent.TYPE_CAMERA_SHUTTER));
+                                    }
+                                }, null, null,
                                 new Camera.PictureCallback() {
                                     @Override
                                     public void onPictureTaken(byte[] data, Camera camera) {
@@ -546,6 +559,7 @@ public class Camera1 extends CameraImpl {
                     mCameraParameters.getSupportedPreviewSizes(),
                     mCameraParameters.getSupportedPictureSizes()
             );
+
             AspectRatio targetRatio = aspectRatios.size() > 0 ? aspectRatios.last() : null;
 
             Iterator<Size> descendingSizes = sizes.descendingIterator();
@@ -892,7 +906,14 @@ public class Camera1 extends CameraImpl {
 
     private TreeSet<AspectRatio> findCommonAspectRatios(List<Camera.Size> previewSizes, List<Camera.Size> pictureSizes) {
         Set<AspectRatio> previewAspectRatios = new HashSet<>();
+        Log.e("MATT", "mMinPreferredResolution: "+mMinPreferredResolution);
         for (Camera.Size size : previewSizes) {
+            if(mMinPreferredResolution > 0){
+                if(size.width < mMinPreferredResolution || size.height < mMinPreferredResolution){
+                    continue;
+                }
+            }
+
             AspectRatio deviceRatio = AspectRatio.of(CameraKit.Internal.screenHeight, CameraKit.Internal.screenWidth);
             AspectRatio previewRatio = AspectRatio.of(size.width, size.height);
             if (deviceRatio.equals(previewRatio)) {
@@ -902,6 +923,7 @@ public class Camera1 extends CameraImpl {
 
         Set<AspectRatio> captureAspectRatios = new HashSet<>();
         for (Camera.Size size : pictureSizes) {
+
             captureAspectRatios.add(AspectRatio.of(size.width, size.height));
         }
 

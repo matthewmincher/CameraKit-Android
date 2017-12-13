@@ -65,6 +65,7 @@
 
         <attr name="android:adjustViewBounds" />
 
+        <attr name="ckMinPreferredResolution" format="integer" />
     </declare-styleable>
 
 </resources>
